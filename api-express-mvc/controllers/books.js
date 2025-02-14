@@ -51,7 +51,16 @@ const createBook = (async (req, res) => {
 const updateBook = (async (req, res) => {
     try{
         let library = new Library({});
-        let updated = await library.update(req.body.id);
+
+        const bookID = req.body._id
+
+        const updateBooks = {
+            title: req.body.title,
+            author: req.body.author,
+            year: req.body.year
+        };
+
+        let updated = await library.update(bookID, updateBooks);
 
         if(updated){
             console.log("Book updated successfully");
@@ -72,7 +81,8 @@ const updateBook = (async (req, res) => {
 const deleteBook = (async(req, res) => {
     try{
         let library = new Library({});
-        let deleted = await library.delete(req.body.id);
+
+        let deleted = await library.delete(req.body._id);
 
         if(deleted){
             console.log("Book deleted successfully");
