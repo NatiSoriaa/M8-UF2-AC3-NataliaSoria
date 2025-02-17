@@ -1,5 +1,5 @@
 // Importamos el modelo de datos
-const Library = require('../models/Library')
+const Library = require('../models/Library');
 
 // Declaración de controladores 
 const getBooks = (async (req, res) => {
@@ -52,14 +52,12 @@ const updateBook = (async (req, res) => {
     try{
         let library = new Library({});
 
-        const bookID = req.body._id
-
+        const bookID = req.body._id;
         const updateBooks = {
             title: req.body.title,
             author: req.body.author,
             year: req.body.year
         };
-
         let updated = await library.update(bookID, updateBooks);
 
         if(updated){
@@ -78,11 +76,12 @@ const updateBook = (async (req, res) => {
     }
 })
 
-const deleteBook = (async(req, res) => {
+const deleteBook = (async (req, res) => {
     try{
         let library = new Library({});
 
-        let deleted = await library.delete(req.body._id);
+        let bookID = String(req.body._id)
+        let deleted = await library.delete(bookID);
 
         if(deleted){
             console.log("Book deleted successfully");

@@ -61,31 +61,29 @@ function updateTable(books) {
         row.append(celdaAcciones);
         let buttonEdit = document.createElement('button');
         buttonEdit.innerHTML = "Modificar";
-        buttonEdit.addEventListener('click', editBook);
+        buttonEdit.addEventListener('click', (event) => editBook(event, book._id));
         celdaAcciones.append(buttonEdit);
         let buttonDelete = document.createElement('button');
         buttonDelete.innerHTML = "Eliminar";
-        buttonDelete.addEventListener('click', deleteBook);
+        buttonDelete.addEventListener('click', (event) => deleteBook(event, book._id)); 
         celdaAcciones.append(buttonDelete);
+
     }
 }
 
-async function deleteBook(event) {
+async function deleteBook(event, bookID) {
     // Leemos el contenido de la columna id de esa fila
     let celdas = event.target.parentElement.parentElement.children;
     let id = celdas[0].innerHTML;
     // Hacemos la petición de DELETE a la API pasando un json en el cuerpo del mensaje
     let apiUrl = "http://localhost:5000/api/books";
-    let deletedBook = {
-        "id": id
-    }
 
     let response = await fetch(apiUrl, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(deletedBook)
+        body: JSON.stringify({ _id: bookID })
     });
     let json = await response.json()
     // Muestra respuesta de la API (JSON) por consola
@@ -95,7 +93,7 @@ async function deleteBook(event) {
     fetchBooks();
 }
 
-async function editBook(event) {
+async function editBook(event, bookID) {
     // Leemos el contenido de las columnas id, título, autor, año de esa fila
     let celdas = event.target.parentElement.parentElement.children;
     let id = celdas[0].innerHTML;
@@ -107,10 +105,10 @@ async function editBook(event) {
     // p.ej. { "id": 1, "title": "titulo", "author": "autor", "year": 1980 }
     let apiUrl = "http://localhost:5000/api/books"
     let modifiedBook = {
-        "id": id,
-        "title": titulo,
-        "author": autor,
-        "year": ano
+        _id: bookID,
+        title: titulo,
+        author: autor,
+        year: ano
     }
     let response = await fetch(apiUrl, {
         method: "PUT",

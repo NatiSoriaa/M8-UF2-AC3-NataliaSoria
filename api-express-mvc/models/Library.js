@@ -1,5 +1,6 @@
 // const mysql = require("mysql2");
 const { MongoClient, ObjectId} = require("mongodb");
+
 const dbConfig = require("../config/mongoDB.config.js");
 
 const URL =  "mongodb://localhost:27017";
@@ -43,6 +44,7 @@ class Library {
     }
     catch (error) {
       return error;
+
     }
   };
 
@@ -51,7 +53,7 @@ class Library {
     await this.connect();
 
     const result = await this.collection.updateOne(
-      { id: bookID }, 
+      { _id: new ObjectId(String(bookID)) }, 
       { $set:  updateBooks}
     );
 
@@ -59,17 +61,19 @@ class Library {
     return result.modifiedCount;
   }
 
-  delete = async (id) => {
+  delete = async (bookID) => {
+    try {
+        await this.connect();
+        const result = await this.collection.deleteOne({ _id: new ObjectId(String(bookID)) }); 
+        return result.deletedCount;
+    } catch (error) {
+        console.error("Error delete:", error);
+        return 0;
+    } finally {
+        await this.close();
+    }
+};
 
-    await this.connect();
-
-    const result = await this.collection.deleteOne({id: parseInt(id)});
-
-    await this.close();
-
-    return result.deletedCount;
-  
-  }
 }
 
 module.exports = Library;
